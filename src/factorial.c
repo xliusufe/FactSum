@@ -174,7 +174,7 @@ SEXP fact(SEXP N)
 		}
 		PROTECT(rfact_s = allocVector(INTSXP, len[0]));		
 		fact_s = INTEGER(rfact_s);		
-		for(i=0;i<len[0];i++) fact_s[i] = fact_n[i];		
+		for(i=0;i<len[0];i++) fact_s[i] = fact_n[len[0]-1-i];		
 	}
 
 	char *names[2] = {"fact", "len"};
@@ -245,8 +245,8 @@ SEXP fact_sum(SEXP N)
 		PROTECT(rfact_sum = allocVector(INTSXP, len[1]));
 		fact_s = INTEGER(rfact_s);
 		fact_sum = INTEGER(rfact_sum);
-		for(i=0;i<len[0];i++) fact_s[i] = fact_n[i];
-		for(i=0;i<len[1];i++) fact_sum[i] = bb[i];
+		for(i=0;i<len[0];i++) fact_s[i] = fact_n[len[0]-1-i];
+		for(i=0;i<len[1];i++) fact_sum[i] = bb[len[1]-1-i];
 	}
 
 	char *names[3] = {"fact", "fuct_sum", "len"};
