@@ -5,7 +5,7 @@ R package "FactSum" Calculates the factorial of a large integer, which mey be mu
 
     #install.packages("devtools")
     library(devtools)
-    install_github("xliusufe/teaching/FactSum")
+    install_github("xliusufe/FactSum")
 
 # Usage
 
