@@ -1,0 +1,14 @@
+Package: FactSum
+Type: Package
+Title: Calculate the factorial of a large integer.
+Version: 1.0
+Date: 2019-03-16
+Author: Xu Liu
+Maintainer: Xu Liu <liu.xu@sufe.edu.cn>
+Description: Calculate the factorial of a large integer, which mey be much greater than the maximum memery of any data type.
+License: GPL (>= 2)
+Depends: R (>= 3.2.0)
+Repository: GitHub
+NeedsCompilation: yes
+Encoding: UTF-8
+Packaged: 2019-03-16 17:45:46 UTC; xu2207
