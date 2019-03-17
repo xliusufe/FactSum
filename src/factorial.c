@@ -4,13 +4,13 @@
 #include <string.h> // required for memcpy()
 #include <time.h>
 
-int factorial_small_sum(int *fact, int *len, int n){
+int factorial_small_sum(int *fact, int *fact_sum, int *len, int n){
 	int i=2,fact0=1, sum=1,Ln;	
 	while(i<=n) {
 		fact0*=i++;
 		sum+=fact0;
 	}
-	fact[0] = fact0; fact[1] = sum;
+	fact[0] = fact0; fact_sum[0] = sum;
 	i = fact0; Ln = 1;
 	while(i/10){i = i/10; Ln++;	}
 	len[0] = Ln-1;
@@ -203,12 +203,11 @@ SEXP fact_sum(SEXP N)
 		len = INTEGER(rlen);
 		for(i=0;i<5;i++) len[i] = 1;			
 
-		PROTECT(rfact_s = allocVector(INTSXP, 2));
+		PROTECT(rfact_s = allocVector(INTSXP, 1));
 		PROTECT(rfact_sum = allocVector(INTSXP, 1));
 		fact_s = INTEGER(rfact_s);
 		fact_sum = INTEGER(rfact_sum);
-		factorial_small_sum(fact_s,len,n);
-		fact_sum[0] = fact_s[1];
+		factorial_small_sum(fact_s,fact_sum,len,n);
 	}
 	else{	
 		int i,j,L=2*n, curr_len, Ln;
@@ -249,7 +248,7 @@ SEXP fact_sum(SEXP N)
 		for(i=0;i<len[1];i++) fact_sum[i] = bb[len[1]-1-i];
 	}
 
-	char *names[3] = {"fact", "fuct_sum", "len"};
+	char *names[3] = {"fact", "fact_sum", "len"};
 	PROTECT(list_names = allocVector(STRSXP, 3));
 	for(i = 0; i < 3; i++)
 		SET_STRING_ELT(list_names, i,  mkChar(names[i]));
