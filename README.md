@@ -1,5 +1,5 @@
 # FactSum
-R package "FactSum" Calculates the factorial of a large integer, which mey be much greater than the maximum memery of any data type.
+R package "FactSum" Calculates the factorial of a large integer, which may be much greater than the maximum memery of any data type.
 
 # Installation
 
