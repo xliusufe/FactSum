@@ -131,7 +131,7 @@ SEXP fact(SEXP N)
 	// dimensions
 	int *n_ = INTEGER(N), *len;
 	int n = n_[0], i;	
-	int *fact_n,*fact_s;
+	int *fact_s;
 	SEXP rlen,rfact_s,list, list_names;
 
 	if(n<11){		
@@ -174,7 +174,8 @@ SEXP fact(SEXP N)
 		}
 		PROTECT(rfact_s = allocVector(INTSXP, len[0]));		
 		fact_s = INTEGER(rfact_s);		
-		for(i=0;i<len[0];i++) fact_s[i] = fact_n[len[0]-1-i];		
+		for(i=0;i<len[0];i++) fact_s[i] = fact_n[len[0]-1-i];	
+		free(fact_n);
 	}
 
 	char *names[2] = {"fact", "len"};
@@ -186,6 +187,7 @@ SEXP fact(SEXP N)
 	SET_VECTOR_ELT(list, 1, rlen);  
 	setAttrib(list, R_NamesSymbol, list_names); 
 
+	free(fact_s);
 	UNPROTECT(4);  
 	return(list);	
 }
@@ -195,7 +197,7 @@ SEXP fact_sum(SEXP N)
 	// dimensions
 	int *n_ = INTEGER(N), *len;
 	int n = n_[0], i;	
-	int *fact_n, *fact_s, *fact_sum;
+	int *fact_s, *fact_sum;
 	SEXP rlen,rfact_s, rfact_sum,list, list_names;
 
 	if(n<11){		
@@ -246,6 +248,7 @@ SEXP fact_sum(SEXP N)
 		fact_sum = INTEGER(rfact_sum);
 		for(i=0;i<len[0];i++) fact_s[i] = fact_n[len[0]-1-i];
 		for(i=0;i<len[1];i++) fact_sum[i] = bb[len[1]-1-i];
+		free(fact_n);free(bb);
 	}
 
 	char *names[3] = {"fact", "fact_sum", "len"};
@@ -258,6 +261,7 @@ SEXP fact_sum(SEXP N)
 	SET_VECTOR_ELT(list, 2, rlen);  
 	setAttrib(list, R_NamesSymbol, list_names); 
 
+	free(fact_s);free(fact_sum);
 	UNPROTECT(5);  
 	return(list);	
 }
