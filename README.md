@@ -9,7 +9,7 @@ R package "FactSum" Calculates the factorial of a large integer, which mey be mu
 
 # Usage
 
-   - [x] [FactSum-manual.pdf](https://github.com/xliusufe/teaching/FactSum/blob/master/inst/FactSum-manual.pdf) ---------- Details of the usage of the package.
+   - [x] [FactSum-manual.pdf](https://github.com/xliusufe/FactSum/blob/master/inst/FactSum-manual.pdf) ---------- Details of the usage of the package.
 # Example
     library(FactSum)
 
