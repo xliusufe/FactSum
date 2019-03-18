@@ -1,5 +1,5 @@
 # FactSum
-R package "FactSum" Calculates the factorial of a large integer, which may be much greater than the maximum memery of any data type.
+R package "FactSum" Calculates the factorial of a large integer, which may be much greater than the maximum memery of any data type. FactSum implements dramatically fast. It takes only 2.57 seconds to cumpute 10000! (it approximates 2.8E35660), and 2.98 seconds to cupute 10000! and sum=1!+2!+3!+...+10000!.
 
 # Installation
 
