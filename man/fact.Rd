@@ -16,15 +16,15 @@ fact(n,is.sum=FALSE)
 A non negative integer.
 }
   \item{is.sum}{
-Logical indicating  that fact out sum of all factorial, that is \eqn{\sum_{i=1}^{n}n!}, if is.sum=TRUE, and not if is.sum=FALSE. Default is FALSE.
+Logical indicating  that fact out sum of all factorial, that is \eqn{\sum_{i=1}^{n}i!}, if is.sum=TRUE, and not if is.sum=FALSE. Default is FALSE.
 }
 }
 
 \value{
   \item{fact}{The factorial of \eqn{n}, which is a string.}
   \item{len_fact}{The digit  of factorial of \eqn{n}, which is a integer.}
-  \item{fact_sum}{The sumation of factorial of \eqn{n},  that is \eqn{\sum_{i=1}^{n}n!}, if is.sum=TRUE, which is a string.}
-  \item{len_fact}{The digit of \eqn{\sum_{i=1}^{n}n!}, which is a integer.}
+  \item{fact_sum}{The sumation of factorial of \eqn{n},  that is \eqn{\sum_{i=1}^{n}i!}, if is.sum=TRUE, which is a string.}
+  \item{len_fact}{The digit of \eqn{\sum_{i=1}^{n}i!}, which is a integer.}
 }
 
 \author{
