@@ -5,7 +5,7 @@
 Calculate the factorial of a large integer.
 }
 \description{
-Calculate the factorial of a large integer, which mey be much greater than the maximum memery of any data type.
+Calculate the factorial of a large integer, which mey be much greater than the maximum memory of any data type.
 }
 \usage{
 fact(n,is.sum=FALSE)
