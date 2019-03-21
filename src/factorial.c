@@ -165,7 +165,7 @@ SEXP fact(SEXP N)
 				curr_len=len[2];
 				len[2] = 2*len[2];
 				f1 = (int*)realloc(fact_n,sizeof(int)*len[2]);
-				if(!f1){fprintf("Out of memery!"); len[4]=0;}
+				if(!f1){printf("Out of memery!"); len[4]=0;}
 				fact_n=f1;
 				for(j=curr_len;j<len[2];j++)fact_n[j]=0;
 			}	
@@ -233,7 +233,7 @@ SEXP fact_sum(SEXP N)
 				len[2] = 2*len[2];
 				b1 = (int*)realloc(bb,sizeof(int)*len[2]);
 				f1 = (int*)realloc(fact_n,sizeof(int)*len[2]);
-				if((!b1)|(!f1)){fprintf("Out of memery!"); len[4]=0;}
+				if((!b1)|(!f1)){printf("Out of memery!"); len[4]=0;}
 				bb=b1; fact_n=f1;
 				for(j=curr_len;j<len[2];j++){ fact_n[j]=0; bb[j]=0;}
 			}	
