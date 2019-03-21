@@ -5,7 +5,7 @@ Version: 1.0
 Date: 2019-03-16
 Author: Xu Liu
 Maintainer: Xu Liu <liu.xu@sufe.edu.cn>
-Description: Calculate the factorial of a large integer, which mey be much greater than the maximum memery of any data type.
+Description: Calculate the factorial of a large integer, which mey be much greater than the maximum memery of any data type. 
 License: GPL (>= 2)
 Depends: R (>= 3.2.0)
 Repository: GitHub

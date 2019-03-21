@@ -1,5 +1,6 @@
 #include <stdio.h>  // required for exit
 #include <stdlib.h> // required for malloc(), free();
+#include <R.h>
 #include <Rinternals.h>  // required for SEXP et.al.;
 #include <string.h> // required for memcpy()
 #include <time.h>
@@ -132,40 +133,37 @@ SEXP fact(SEXP N)
 	int n = n_[0], i;	
 	int *fact_s;
 	SEXP rlen,rfact_s,list, list_names;
+	
+	PROTECT(rlen = allocVector(INTSXP, 5));
+	len = INTEGER(rlen);
+	for(i=0;i<5;i++) len[i] = 1;
 
 	if(n<11){		
-		PROTECT(rlen = allocVector(INTSXP, 5));
-		len = INTEGER(rlen);
-		for(i=0;i<5;i++) len[i] = 1;			
-
 		PROTECT(rfact_s = allocVector(INTSXP, 1));
 		fact_s = INTEGER(rfact_s);
 		factorial_small(fact_s,len,n);
 	}
 	else{	
 		int j,L=2*n, curr_len, Ln;
-		
-		PROTECT(rlen = allocVector(INTSXP, 5));
-		len = INTEGER(rlen);
 
 		int *fact_n;
 		fact_n = (int *)malloc(sizeof(int)*L);
 
-		len[0]=len[1]=1;len[2]=L; len[3]=2; len[4] = 1;
+		len[2]=L; len[3]=2; len[4] = 1;
 		fact_n[0]=1; 
 		for(i=1;i<L;i++) fact_n[i]=0;
 		i = n; Ln = 2;
 		while(i/10){i = i/10; Ln++;	}
 
 		int pout=0;
-		while(pout==0){
+		while(!pout){
 			pout=factorial(fact_n,len, Ln,n);
 			if(!pout){
 				int *f1;
 				curr_len=len[2];
 				len[2] = 2*len[2];
 				f1 = (int*)realloc(fact_n,sizeof(int)*len[2]);
-				if(!f1){printf("Out of memery!"); len[4]=0;}
+				if(!f1){printf("Out of memory!"); len[4]=0;}
 				fact_n=f1;
 				for(j=curr_len;j<len[2];j++)fact_n[j]=0;
 			}	
@@ -180,12 +178,11 @@ SEXP fact(SEXP N)
 	PROTECT(list_names = allocVector(STRSXP, 2));
 	for(i = 0; i < 2; i++)
 		SET_STRING_ELT(list_names, i,  mkChar(names[i]));
-	PROTECT(list = allocVector(VECSXP, 3)); 
+	PROTECT(list = allocVector(VECSXP, 2)); 
 	SET_VECTOR_ELT(list, 0, rfact_s);
 	SET_VECTOR_ELT(list, 1, rlen);  
 	setAttrib(list, R_NamesSymbol, list_names); 
-
-	free(fact_s);
+		
 	UNPROTECT(4);  
 	return(list);	
 }
@@ -196,12 +193,12 @@ SEXP fact_sum(SEXP N)
 	int n = n_[0], i;	
 	int *fact_s, *fact_sum;
 	SEXP rlen,rfact_s, rfact_sum,list, list_names;
+	
+	PROTECT(rlen = allocVector(INTSXP, 5));
+	len = INTEGER(rlen);
+	for(i=0;i<5;i++) len[i] = 1;
 
 	if(n<11){		
-		PROTECT(rlen = allocVector(INTSXP, 5));
-		len = INTEGER(rlen);
-		for(i=0;i<5;i++) len[i] = 1;			
-
 		PROTECT(rfact_s = allocVector(INTSXP, 1));
 		PROTECT(rfact_sum = allocVector(INTSXP, 1));
 		fact_s = INTEGER(rfact_s);
@@ -210,22 +207,19 @@ SEXP fact_sum(SEXP N)
 	}
 	else{	
 		int j,L=2*n, curr_len, Ln;
-		
-		PROTECT(rlen = allocVector(INTSXP, 5));
-		len = INTEGER(rlen);
 
 		int *bb,*fact_n;
 		fact_n = (int *)malloc(sizeof(int)*L);
 		bb = (int*) malloc(sizeof(int)*L);
 
-		len[0]=len[1]=1;len[2]=L; len[3]=2; len[4]=1;
+		len[2]=L; len[3]=2; len[4]=1;
 		fact_n[0]=1; bb[0]=1;
 		for(i=1;i<L;i++){ fact_n[i]=0; bb[i]=0;}
 		i = n; Ln = 2;
 		while(i/10){i = i/10; Ln++;	}
 
 		int pout=0;
-		while(pout==0){
+		while(!pout){
 			pout=factorial_sum(bb,fact_n,len, Ln,n);
 			if(!pout){
 				int *b1,*f1;
@@ -233,7 +227,7 @@ SEXP fact_sum(SEXP N)
 				len[2] = 2*len[2];
 				b1 = (int*)realloc(bb,sizeof(int)*len[2]);
 				f1 = (int*)realloc(fact_n,sizeof(int)*len[2]);
-				if((!b1)|(!f1)){printf("Out of memery!"); len[4]=0;}
+				if((!b1)|(!f1)){printf("Out of memory!"); len[4]=0;}
 				bb=b1; fact_n=f1;
 				for(j=curr_len;j<len[2];j++){ fact_n[j]=0; bb[j]=0;}
 			}	
@@ -256,8 +250,7 @@ SEXP fact_sum(SEXP N)
 	SET_VECTOR_ELT(list, 1, rfact_sum);
 	SET_VECTOR_ELT(list, 2, rlen);  
 	setAttrib(list, R_NamesSymbol, list_names); 
-
-	free(fact_s);free(fact_sum);
-	UNPROTECT(5);  
+		
+	UNPROTECT(5); 
 	return(list);	
 }

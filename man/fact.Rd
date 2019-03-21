@@ -5,7 +5,7 @@
 Calculate the factorial of a large integer.
 }
 \description{
-Calculate the factorial of a large integer, which mey be much greater than the maximum memory of any data type.
+Calculate the factorial of a large integer, which mey be much greater than the maximum memory of any data type. FactSum implements dramatically fast. It takes only \eqn{2.57} seconds to cumpute \eqn{10000!} (it approximates \eqn{2.8E+35660}), and \eqn{2.98} seconds to compute \eqn{10000!} and \code{sum=1!+2!+3!+...+10000!} simultaneously.
 }
 \usage{
 fact(n,is.sum=FALSE)
