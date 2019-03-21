@@ -128,7 +128,6 @@ int factorial(int *fact_n, int *len, int Ln, int n){
 
 SEXP fact(SEXP N)
 {
-	// dimensions
 	int *n_ = INTEGER(N), *len;
 	int n = n_[0], i;	
 	int *fact_s;
@@ -144,12 +143,11 @@ SEXP fact(SEXP N)
 		factorial_small(fact_s,len,n);
 	}
 	else{	
-		int i,j,L=2*n, curr_len, Ln;
+		int j,L=2*n, curr_len, Ln;
 		
 		PROTECT(rlen = allocVector(INTSXP, 5));
 		len = INTEGER(rlen);
 
-		// Pointers
 		int *fact_n;
 		fact_n = (int *)malloc(sizeof(int)*L);
 
@@ -167,7 +165,7 @@ SEXP fact(SEXP N)
 				curr_len=len[2];
 				len[2] = 2*len[2];
 				f1 = (int*)realloc(fact_n,sizeof(int)*len[2]);
-				if(!f1){printf("Out of memery!"); len[4]=0;}
+				if(!f1){fprintf("Out of memery!"); len[4]=0;}
 				fact_n=f1;
 				for(j=curr_len;j<len[2];j++)fact_n[j]=0;
 			}	
@@ -194,7 +192,6 @@ SEXP fact(SEXP N)
 
 SEXP fact_sum(SEXP N)
 {
-	// dimensions
 	int *n_ = INTEGER(N), *len;
 	int n = n_[0], i;	
 	int *fact_s, *fact_sum;
@@ -212,12 +209,11 @@ SEXP fact_sum(SEXP N)
 		factorial_small_sum(fact_s,fact_sum,len,n);
 	}
 	else{	
-		int i,j,L=2*n, curr_len, Ln;
+		int j,L=2*n, curr_len, Ln;
 		
 		PROTECT(rlen = allocVector(INTSXP, 5));
 		len = INTEGER(rlen);
 
-		// Pointers
 		int *bb,*fact_n;
 		fact_n = (int *)malloc(sizeof(int)*L);
 		bb = (int*) malloc(sizeof(int)*L);
@@ -237,7 +233,7 @@ SEXP fact_sum(SEXP N)
 				len[2] = 2*len[2];
 				b1 = (int*)realloc(bb,sizeof(int)*len[2]);
 				f1 = (int*)realloc(fact_n,sizeof(int)*len[2]);
-				if((!b1)|(!f1)){printf("Out of memery!"); len[4]=0;}
+				if((!b1)|(!f1)){fprintf("Out of memery!"); len[4]=0;}
 				bb=b1; fact_n=f1;
 				for(j=curr_len;j<len[2];j++){ fact_n[j]=0; bb[j]=0;}
 			}	
