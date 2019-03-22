@@ -131,17 +131,16 @@ SEXP fact(SEXP N)
 {
 	int *n_ = INTEGER(N), *len;
 	int n = n_[0], i;	
-	char *fact_s;
 	SEXP rlen,rfact_s,list, list_names; 
 
 	PROTECT(rlen = allocVector(INTSXP, 5));
 	len = INTEGER(rlen);
 	for(i=0;i<5;i++) len[i] = 1;
-	
+
 	if(n<11){	
 		int *fact_n= (int*)malloc(sizeof(int)*1);
 		factorial_small(fact_n,len,n);
-		fact_s =(char *)malloc(sizeof(char)*len[0]);
+		char *fact_s =(char *)malloc(sizeof(char)*len[0]);
 		itoa(fact_n[0],fact_s,10);	
 
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
@@ -171,14 +170,13 @@ SEXP fact(SEXP N)
 				for(j=curr_len;j<len[2];j++)fact_n[j]=0;
 			}	
 		}		
-		fact_s =(char *)malloc(sizeof(char)*(len[0]+1));
+		char *fact_s =(char *)malloc(sizeof(char)*(len[0]+1));
 		for(i=0;i<len[0];i++) fact_s[i] = fact_n[len[0]-1-i]+48;	
 		fact_s[len[0]] = '\0';
 
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));
-		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_n));
-		free(fact_n); 
+		free(fact_n);
 	}
 	char *names[2] = {"fact", "len"};
 	PROTECT(list_names = allocVector(STRSXP, 2));
@@ -189,7 +187,7 @@ SEXP fact(SEXP N)
 	SET_VECTOR_ELT(list, 1, rlen);  
 	setAttrib(list, R_NamesSymbol, list_names); 
 
-	UNPROTECT(4); 
+	UNPROTECT(4);  
 	return(list);	
 }
 
@@ -239,11 +237,12 @@ SEXP fact_sum(SEXP N)
 				len[2] = 2*len[2];
 				b1 = (char*)realloc(bb,sizeof(char)*len[2]);
 				f1 = (char*)realloc(fact_n,sizeof(char)*len[2]);
-				if((!b1)|(!f1)) error("Out of memery!");
+				if((!b1)|(!f1)){error("Out of memery!"); len[4]=0;}
 				bb=b1; fact_n=f1;
 				for(j=curr_len;j<len[2];j++){ fact_n[j]=0; bb[j]=0;}
 			}	
-		}		
+		}
+
 		fact_s =(char *)malloc(sizeof(char)*(len[0]+1));
 		fact_sum =(char *)malloc(sizeof(char)*(len[1])+1);
 		for(i=0;i<len[0];i++) fact_s[i] = fact_n[len[0]-1-i]+48;
@@ -254,7 +253,7 @@ SEXP fact_sum(SEXP N)
 		PROTECT(rfact_sum = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));
 		SET_STRING_ELT(rfact_sum, 0,  mkChar(fact_sum));
-		free(fact_n); free(bb); 
+		free(fact_n); free(bb);
 	}
 	char *names[3] = {"fact", "fuct_sum", "len"};
 	PROTECT(list_names = allocVector(STRSXP, 3));

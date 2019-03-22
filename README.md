@@ -13,8 +13,15 @@ R package "FactSum" Calculates the factorial of a large integer, which may be mu
 # Example
     library(FactSum)
 
-    fit <- fact(20)
-    fit <- fact(20,1)
+    fit <- fact(10)
+    print(fit$fact,quote=FALSE)
+    fit$len_fact
+    #------------------------
+    fit_sum <- fact(20,1)
+    print(fit_sum$fact,quote=FALSE)
+    fit_sum$len_fact
+    print(fit_sum$fact_sum,quote=FALSE)
+    fit_sum$len_sum
     
 
 # Development
