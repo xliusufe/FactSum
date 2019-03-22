@@ -33,6 +33,14 @@ Xu Liu
 
 \examples{
 fit <- fact(10)
+print(fit$fact,quote=FALSE)
+fit$len_fact
+
 fit_sum <- fact(20,1)
+print(fit$fact,quote=FALSE)
+fit$len_fact
+
+print(fit$fact_sum,quote=FALSE)
+fit$len_sum
 }
 

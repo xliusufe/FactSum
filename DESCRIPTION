@@ -1,6 +1,6 @@
 Package: FactSum
 Type: Package
-Title: Calculate the factorial of a large integer.
+Title: Calculate the factorial of a large integer
 Version: 1.0
 Date: 2019-03-16
 Author: Xu Liu
