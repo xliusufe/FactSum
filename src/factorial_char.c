@@ -37,7 +37,7 @@ int factorial_small(int *fact, int *len, int n){
 int add(char *a, char *b, int curr_len, int s){
 	//add b to a
 	int i;
-	char temp;
+	int temp;
 	for(i=0;i<curr_len;i++){
 		temp = a[i+s]+b[i]; 
 		if(temp<10) a[i+s]=temp;
@@ -50,7 +50,7 @@ int add(char *a, char *b, int curr_len, int s){
 int multiply_single(char *b, int curr_len, int n){
 	//multiply b by n (n=0,1,2,...,9)
 	int i,temp;
-	char temp1=0;
+	int temp1=0;
 	for(i=0;i<curr_len;i++){
 		temp = b[i]*n+temp1; 
 		b[i]=temp%10;
