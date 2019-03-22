@@ -37,24 +37,24 @@ int factorial_small(int *fact, int *len, int n){
 int add(char *a, char *b, int curr_len, int s){
 	//add b to a
 	int i;
-	char temp,temp1=0;
+	char temp;
 	for(i=0;i<curr_len;i++){
-		temp = a[i+s]+b[i]+temp1; 
-		a[i+s]=temp%10;
-		temp1 = temp/10;
+		temp = a[i+s]+b[i]; 
+		if(temp<10) a[i+s]=temp;
+		else {a[i+s]=temp-10; a[i+s+1]+=1;}
 	}
-	if(temp1>0){ a[s+curr_len]=temp1;curr_len++;}
+	if(a[s+curr_len]>0)curr_len++;
 	return curr_len+s;
-
 }
 
 int multiply_single(char *b, int curr_len, int n){
 	//multiply b by n (n=0,1,2,...,9)
-	int i,temp,temp1=0;
+	int i,temp;
+	char temp1=0;
 	for(i=0;i<curr_len;i++){
 		temp = b[i]*n+temp1; 
-		b[i]=(char)(temp%10);
-		temp1 = (char)(temp/10);
+		b[i]=temp%10;
+		temp1 = temp/10;
 	}
 	if(temp1>0){ b[curr_len]=temp1;curr_len++;}
 	return curr_len;
