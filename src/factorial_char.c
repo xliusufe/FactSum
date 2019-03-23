@@ -4,6 +4,14 @@
 #include <R.h>
 #include <Rinternals.h>  
 
+int int2char(int n,char* str){
+	int i=n,j=1;
+	str[0] = i%10+48;
+	while(i/10){i = i/10; str[j++]=i%10+48;}
+	str[j] = '\0';
+	return j;
+}
+
 int factorial_small_sum(int *fact, int *len, int n){
 	int i=2,fact0=1, sum=1,Ln;	
 	while(i<=n) {
@@ -37,11 +45,11 @@ int factorial_small(int *fact, int *len, int n){
 int add(char *a, char *b, int curr_len, int s){
 	//add b to a
 	int i;
-	int temp;
+	char temp,ten=10,one=1;
 	for(i=0;i<curr_len;i++){
 		temp = a[i+s]+b[i]; 
-		if(temp<10) a[i+s]=temp;
-		else {a[i+s]=temp-10; a[i+s+1]+=1;}
+		if(temp<ten) a[i+s]=temp;
+		else {a[i+s]=temp-ten; a[i+s+1]+=one;}
 	}
 	if(a[s+curr_len]>0)curr_len++;
 	return curr_len+s;
@@ -140,8 +148,8 @@ SEXP fact(SEXP N)
 	if(n<11){	
 		int *fact_n= (int*)malloc(sizeof(int)*1);
 		factorial_small(fact_n,len,n);
-		char *fact_s =(char *)malloc(sizeof(char)*len[0]);
-		itoa(fact_n[0],fact_s,10);	
+		char *fact_s =(char *)malloc(sizeof(char)*(len[0]+1));
+		int2char(fact_n[0],fact_s);
 
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));
@@ -205,10 +213,10 @@ SEXP fact_sum(SEXP N)
 		int *fact_n= (int*)malloc(sizeof(int)*2);
 		factorial_small_sum(fact_n,len,n);
 
-		fact_s =(char *)malloc(sizeof(char)*len[0]);
-		fact_sum =(char *)malloc(sizeof(char)*len[1]);
-		itoa(fact_n[0],fact_s,10);
-		itoa(fact_n[1],fact_sum,10);
+		fact_s =(char *)malloc(sizeof(char)*(len[0]+1));
+		fact_sum =(char *)malloc(sizeof(char)*(len[1]+1));
+		int2char(fact_n[0],fact_s);
+		int2char(fact_n[1],fact_sum);
 
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		PROTECT(rfact_sum = allocVector(STRSXP, 1));
