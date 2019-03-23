@@ -6,8 +6,12 @@
 
 int int2char(int n,char* str){
 	int i=n,j=1;
+	char temp;
 	str[0] = i%10+48;
 	while(i/10){i = i/10; str[j++]=i%10+48;}
+	for(i=0;i<j/2;i++){
+		temp = str[i]; str[i]=str[j-i-1];str[j-i-1]=temp;
+	}
 	str[j] = '\0';
 	return j;
 }
