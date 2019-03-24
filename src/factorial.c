@@ -37,12 +37,11 @@ int factorial_small(int *fact, int *len, int n){
 
 int add(int *a, int *b, int curr_len, int s){
 	//add b to a
-	int i;
-	int temp,temp1=0;
+	int i,temp;
 	for(i=0;i<curr_len;i++){
-		temp = a[i+s]+b[i]+temp1; 
-		a[i+s]=temp%10;
-		temp1 = temp/10;
+		temp = a[i+s]+b[i]; 
+		if(temp<10) a[i+s]=temp;
+		else {a[i+s]=temp-10; a[i+s+1]+=1;}
 	}
 	if(temp1>0){ a[s+curr_len]=temp1;curr_len++;}
 	return curr_len+s;
