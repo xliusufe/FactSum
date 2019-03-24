@@ -32,10 +32,12 @@ Xu Liu
 }
 
 \examples{
+#Example 1
 fit <- fact(10)
 print(fit$fact,quote=FALSE)
 fit$len_fact
 
+#Example 2
 fit_sum <- fact(20,1)
 print(fit$fact,quote=FALSE)
 fit$len_fact

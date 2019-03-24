@@ -18,10 +18,7 @@ int int2char(int n,char* str){
 
 int factorial_small_sum(int *fact, int *len, int n){
 	int i=2,fact0=1, sum=1,Ln;	
-	while(i<=n) {
-		fact0*=i++;
-		sum+=fact0;
-	}
+	while(i<=n) {fact0*=i++; sum+=fact0;}
 	fact[0] = fact0; fact[1] = sum;
 	i = fact0; Ln = 1;
 	while(i/10){i = i/10; Ln++;	}
@@ -36,9 +33,7 @@ int factorial_small_sum(int *fact, int *len, int n){
 
 int factorial_small(int *fact, int *len, int n){
 	int i=2,fact0=1,Ln;	
-	while(i<=n) {
-		fact0*=i++;
-	}
+	while(i<=n) fact0*=i++;
 	fact[0] = fact0;
 	i = fact0; Ln = 1;
 	while(i/10){i = i/10; Ln++;	}
@@ -46,20 +41,6 @@ int factorial_small(int *fact, int *len, int n){
 	return 0;
 }
 
-int add(int *a, int *b, int curr_len, int s){
-	//add b to a
-	int i,temp;
-	for(i=0;i<curr_len;i++){
-		temp = a[i+s]+b[i]; 
-		if(temp<10) a[i+s]=temp;
-		else {a[i+s]=temp-10; a[i+s+1]+=1;}
-	}
-	if(a[s+curr_len]>0)curr_len++;
-	return curr_len+s;
-
-}
-
-/*
 int add(int *a, int *b, int curr_len, int s){
 	//add b to a
 	int i;
@@ -72,7 +53,6 @@ int add(int *a, int *b, int curr_len, int s){
 	if(temp1>0){ a[s+curr_len]=temp1;curr_len++;}
 	return curr_len+s;
 }
-*/
 
 int multiply_single(int *b, int curr_len, int n){
 	//multiply b by n (n=0,1,2,...,9)
@@ -154,9 +134,8 @@ int factorial(int *fact_n, int *len, int Ln, int n){
 
 SEXP fact(SEXP N)
 {
-	int *n_ = INTEGER(N), *len;
-	int n = n_[0], i;
-	int *fact_n;
+	int *n_ = INTEGER(N);
+	int n = n_[0], i,*len, *fact_n;
 	char *fact_s;
 	SEXP rlen,rfact_s,list, list_names;
 	
@@ -174,10 +153,8 @@ SEXP fact(SEXP N)
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));
 	}
 	else{	
-		int j,L=2*n, curr_len, Ln;
-
+		int j,L=4*n, curr_len, Ln;
 		fact_n = (int *)malloc(sizeof(int)*L);
-
 		len[2]=L; len[3]=2; len[4] = 1;
 		fact_n[0]=1; 
 		for(i=1;i<L;i++) fact_n[i]=0;
@@ -220,9 +197,8 @@ SEXP fact(SEXP N)
 
 SEXP fact_sum(SEXP N)
 {
-	int *n_ = INTEGER(N), *len;
-	int n = n_[0], i;	
-	int *fact_n;
+	int *n_ = INTEGER(N);
+	int n = n_[0], i, *len,*fact_n;	
 	char *fact_s, *fact_sum;
 	SEXP rlen,rfact_s, rfact_sum,list, list_names;
 	
@@ -244,7 +220,7 @@ SEXP fact_sum(SEXP N)
 		SET_STRING_ELT(rfact_sum, 0,  mkChar(fact_sum));		
 	}
 	else{	
-		int j,L=2*n, curr_len, Ln;		
+		int j,L=4*n, curr_len, Ln;		
 		fact_n = (int *)malloc(sizeof(int)*L);
 		int *bb = (int*) malloc(sizeof(int)*L);
 
