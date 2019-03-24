@@ -37,15 +37,15 @@ int factorial_small(int *fact, int *len, int n){
 
 int add(int *a, int *b, int curr_len, int s){
 	//add b to a
-	int i,temp;
+	int i;
+	int temp,temp1=0;
 	for(i=0;i<curr_len;i++){
-		temp = a[i+s]+b[i]; 
-		if(temp<10) a[i+s]=temp;
-		else {a[i+s]=temp-10; a[i+s+1]+=1;}
+		temp = a[i+s]+b[i]+temp1; 
+		a[i+s]=temp%10;
+		temp1 = temp/10;
 	}
-	if(a[s+curr_len]>0)curr_len++;
+	if(temp1>0){ a[s+curr_len]=temp1;curr_len++;}
 	return curr_len+s;
-
 }
 
 int multiply_single(int *b, int curr_len, int n){
@@ -54,7 +54,7 @@ int multiply_single(int *b, int curr_len, int n){
 	for(i=0;i<curr_len;i++){
 		temp = b[i]*n+temp1; 
 		b[i]=temp%10;
-		temp1 = (int)(temp/10);
+		temp1 = temp/10;
 	}
 	if(temp1>0){ b[curr_len]=temp1;curr_len++;}
 	return curr_len;
@@ -67,7 +67,7 @@ int multiply(int *b, int *temp, int *temp1, int L, int curr_len0, int n){
 	for(i=0;i<L;i++) temp1[i]=b[i];
 	if(m%10!=0) curr_len = multiply_single(b,curr_len0,m%10);
 	else for(i=0;i<curr_len;i++) b[i]=0;
-	m = (int)(m/10);
+	m = m/10;
 	count=1;
 	while(m>0){
 		for(i=0;i<curr_len;i++) temp[i]=temp1[i];
@@ -76,7 +76,7 @@ int multiply(int *b, int *temp, int *temp1, int L, int curr_len0, int n){
 			curr_len1 = add(b,temp,curr_len1,count);
 		}
 		curr_len=curr_len1;
-		m = (int)(m/10);		
+		m = m/10;		
 		count++;
 	}	
 	return curr_len;
