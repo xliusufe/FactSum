@@ -153,13 +153,15 @@ SEXP fact(SEXP N)
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));
 	}
 	else{	
-		int j,L=4*n, curr_len, Ln;
+		int j,L, curr_len, Ln=2;
+		i = n;
+		while(i/10){i = i/10; Ln++;	}
+		L=(Ln-1)*n;
 		fact_n = (int *)malloc(sizeof(int)*L);
 		len[2]=L; len[3]=2; len[4] = 1;
 		fact_n[0]=1; 
 		for(i=1;i<L;i++) fact_n[i]=0;
-		i = n; Ln = 2;
-		while(i/10){i = i/10; Ln++;	}
+
 
 		int pout=0;
 		while(!pout){
@@ -220,15 +222,16 @@ SEXP fact_sum(SEXP N)
 		SET_STRING_ELT(rfact_sum, 0,  mkChar(fact_sum));		
 	}
 	else{	
-		int j,L=4*n, curr_len, Ln;		
+		int j,L, curr_len, Ln=2;
+		i = n;
+		while(i/10){i = i/10; Ln++;	}
+		L=(Ln-1)*n;
 		fact_n = (int *)malloc(sizeof(int)*L);
 		int *bb = (int*) malloc(sizeof(int)*L);
 
 		len[2]=L; len[3]=2; len[4]=1;
 		fact_n[0]=1; bb[0]=1;
 		for(i=1;i<L;i++){ fact_n[i]=0; bb[i]=0;}
-		i = n; Ln = 2;
-		while(i/10){i = i/10; Ln++;	}
 
 		int pout=0;
 		while(!pout){
