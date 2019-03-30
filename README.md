@@ -25,5 +25,5 @@ R package "FactSum" Calculates the factorial of a large integer, which may be mu
     
 
 # Development
-This R package is developed by Xu Liu (liu.xu@sufe.edu.cn) .
+This R package is developed by Xu Liu (liu.xu@sufe.edu.cn).
 

@@ -41,94 +41,64 @@ int factorial_small(int *fact, int *len, int n){
 	return 0;
 }
 
-int add(int *a, int *b, int curr_len, int s){
-	//add b to a
-	int i;
-	int temp,temp1=0;
-	for(i=0;i<curr_len;i++){
-		temp = a[i+s]+b[i]+temp1; 
-		a[i+s]=temp%10;
-		temp1 = temp/10;
+void plus(int *a, int *b, int curr_len){
+	int i,temp=0,*pa=&a[0],*pb=&b[0];
+	for(i=0;i<curr_len;i++,pa++,pb++){
+		temp = *pa+*pb+temp/10; 
+		*pa=temp%10;
 	}
-	if(temp1>0){ a[s+curr_len]=temp1;curr_len++;}
-	return curr_len+s;
+	if(temp/10) *pa=temp/10;
 }
 
-int multiply_single(int *b, int curr_len, int n){
-	//multiply b by n (n=0,1,2,...,9)
-	int i,temp,temp1=0;
-	for(i=0;i<curr_len;i++){
-		temp = b[i]*n+temp1; 
-		b[i]=temp%10;
-		temp1 = temp/10;
+int product(int *b, int curr_len, int n, int digits){
+	int i,temp1=0,*pb=&b[0];
+	curr_len+=digits-1;
+	for(i=0;i<curr_len;i++,pb++){
+		temp1=(*pb)*n+temp1/10; 
+		*pb=temp1%10;
 	}
-	if(temp1>0){ b[curr_len]=temp1;curr_len++;}
-	return curr_len;
-}
-
-int multiply(int *b, int *temp, int *temp1, int L, int curr_len0, int n){
-	//multiply b by n
-	int i,m=n,count,curr_len=curr_len0,curr_len1=curr_len0;
-
-	for(i=0;i<L;i++) temp1[i]=b[i];
-	if(m%10!=0) curr_len = multiply_single(b,curr_len0,m%10);
-	else for(i=0;i<curr_len;i++) b[i]=0;
-	m = m/10;
-	count=1;
-	while(m>0){
-		for(i=0;i<curr_len;i++) temp[i]=temp1[i];
-		if(m%10!=0){
-			curr_len1 = multiply_single(temp,curr_len0,m%10);
-			curr_len1 = add(b,temp,curr_len1,count);
-		}
-		curr_len=curr_len1;
-		m = m/10;		
-		count++;
-	}	
+	if(temp1/10){ *pb=temp1/10;curr_len++;}
 	return curr_len;
 }
 
 int factorial_sum(int *b, int *fact_n, int *len, int Ln, int n){
-	int i,curr_len=len[0];
-	int *temp, *temp1;
-	temp = (int*) malloc(sizeof(int)*len[2]);
-	temp1 = (int*) malloc(sizeof(int)*len[2]);	
-
-	i=len[3];
-	while(i<=n){
-		curr_len = multiply(fact_n,temp,temp1,len[2],curr_len,i++);
-		len[0] = curr_len;		
-		curr_len = add(b,fact_n,curr_len,0);
-		len[1] = curr_len;
-		if(curr_len>len[2]-Ln){
-			len[3] = i;
-			free(temp);free(temp1);
+	int i=2,curr_len=0,curr_len1=0,digits=2,up=100,fact0=1,sum=1;
+	while(i<=10) {fact0*=i++; sum+=fact0;}
+	i = fact0;fact_n[0]=i%10;
+	while(i/10){i = i/10;fact_n[++curr_len]=i%10;}
+	i = sum;b[0]=i%10;
+	while(i/10){i = i/10;b[++curr_len1]=i%10;}
+	i=11;
+	while(i<=n){		
+		curr_len = product(fact_n,curr_len,i++,digits);				
+		plus(b,fact_n,curr_len);		
+		if(curr_len1>len[2]-Ln){
+			len[3] = i-1;
 			return 0;
 		}
+		if(i==up){ digits++; up=10*up;}
 	}
+	len[0] = curr_len; len[1] = curr_len;
 	len[3] = i;
-	free(temp);free(temp1);
 	return 1;
 }
 
 int factorial(int *fact_n, int *len, int Ln, int n){
-	int i,curr_len=len[0];
-	int *temp, *temp1;
-	temp = (int*) malloc(sizeof(int)*len[2]);
-	temp1 = (int*) malloc(sizeof(int)*len[2]);	
-
-	i=len[3];
-	while(i<=n){
-		curr_len = multiply(fact_n,temp,temp1,len[2],curr_len,i++);
-		len[0] = curr_len;		
+	int i=2,curr_len=0,curr_len1=0,digits=2,up=100,fact0=1;
+	while(i<=10)fact0*=i++;
+	i = fact0;fact_n[0]=i%10;
+	while(i/10){i = i/10;fact_n[++curr_len]=i%10;}
+	i=11;
+	while(i<=n){		
+		curr_len = product(fact_n,curr_len,i++,digits);						
 		if(curr_len>len[2]-Ln){
-			len[3] = i;
-			free(temp);free(temp1);
+			len[3] = i-1;
 			return 0;
 		}
+		if(i==up){ digits++; up=10*up;}
 	}
+	len[0] = curr_len;
 	len[3] = i;
-	free(temp);free(temp1);
 	return 1;
 }
 
