@@ -42,7 +42,7 @@ int factorial_small(int *fact, int *len, int n){
 }
 
 int plus(int *b, int *pf, int curr_len, int count5, int count10){
-	int i,temp=0,*pa=&b[0],*pb=pf;
+	int i,temp=0,*pa=b,*pb=pf;
 	pa+=count5+count10; pb+=count10;
 	for(i=0;i<curr_len;i++,pa++,pb++){
 		temp = *pa+*pb+temp/10; 
@@ -65,7 +65,7 @@ int product(int curr_len, int n, int *pf, int digits){
 
 int factorial_sum(int *b, int *fact_n, int *len, int Ln, int n){
 	int i=2,curr_len=0,curr_len1=0,digits=2,up=100,fact0=1,sum=1,count5=2,count10=0;
-	int k,*pf=&fact_n[2];
+	int k,*pf=fact_n+2;
 	while(i<=10) {fact0*=i++; sum+=fact0;}
 	i = fact0;fact_n[0]=i%10;
 	while(i/10){i = i/10;fact_n[++curr_len]=i%10;}
@@ -93,7 +93,7 @@ int factorial_sum(int *b, int *fact_n, int *len, int Ln, int n){
 
 int factorial(int *fact_n, int *len, int Ln, int n){
 	int i=2,curr_len=0,curr_len1=0,digits=2,up=100,fact0=1,count5=2,count10=0;
-	int k,*pf=&fact_n[2];
+	int k,*pf=fact_n+2;
 	while(i<=10)fact0*=i++;
 	i = fact0;fact_n[0]=i%10;
 	while(i/10){i = i/10;fact_n[++curr_len]=i%10;}
