@@ -41,17 +41,19 @@ int factorial_small(int *fact, int *len, int n){
 	return 0;
 }
 
-void plus(int *a, int *b, int curr_len){
-	int i,temp=0,*pa=&a[0],*pb=&b[0];
+int plus(int *b, int *pf, int curr_len, int count5, int count10){
+	int i,temp=0,*pa=&b[0],*pb=pf;
+	pa+=count5+count10; pb+=count10;
 	for(i=0;i<curr_len;i++,pa++,pb++){
 		temp = *pa+*pb+temp/10; 
 		*pa=temp%10;
 	}
-	if(temp/10) *pa=temp/10;
+	if(temp/10){*pa=temp/10;curr_len++;}
+	return curr_len+count5+count10;
 }
 
-int product(int *b, int curr_len, int n, int digits){
-	int i,temp1=0,*pb=&b[0];
+int product(int curr_len, int n, int *pf, int digits){
+	int i,temp1=0,*pb=pf;
 	curr_len+=digits-1;
 	for(i=0;i<curr_len;i++,pb++){
 		temp1=(*pb)*n+temp1/10; 
@@ -62,43 +64,55 @@ int product(int *b, int curr_len, int n, int digits){
 }
 
 int factorial_sum(int *b, int *fact_n, int *len, int Ln, int n){
-	int i=2,curr_len=0,curr_len1=0,digits=2,up=100,fact0=1,sum=1;
+	int i=2,curr_len=0,curr_len1=0,digits=2,up=100,fact0=1,sum=1,count5=2,count10=0;
+	int k,*pf=&fact_n[2];
 	while(i<=10) {fact0*=i++; sum+=fact0;}
 	i = fact0;fact_n[0]=i%10;
 	while(i/10){i = i/10;fact_n[++curr_len]=i%10;}
 	i = sum;b[0]=i%10;
 	while(i/10){i = i/10;b[++curr_len1]=i%10;}
+	curr_len-=2; 
 	i=11;
-	while(i<=n){		
-		curr_len = product(fact_n,curr_len,i++,digits);				
-		plus(b,fact_n,curr_len);		
+	while(i<=n){	
+		k=i;
+		while(!(k/10)){k/=10;count10++;}
+		curr_len = product(curr_len,k,pf,digits);
+		curr_len1 = plus(b,pf,curr_len,count5,count10);
 		if(curr_len1>len[2]-Ln){
-			len[3] = i-1;
+			len[3] = i;
 			return 0;
 		}
-		if(i==up){ digits++; up=10*up;}
+		i++;
+		if(i==up){ digits++; up*=10;}
+		while(!(*pf)){pf++;curr_len--;count5++;}
 	}
-	len[0] = curr_len; len[1] = curr_len;
-	len[3] = i;
+	len[0] = curr_len+count5+count10; len[1] = curr_len1;	
+	len[3] = i; len[2] = count5+count10;
 	return 1;
 }
 
 int factorial(int *fact_n, int *len, int Ln, int n){
-	int i=2,curr_len=0,curr_len1=0,digits=2,up=100,fact0=1;
+	int i=2,curr_len=0,curr_len1=0,digits=2,up=100,fact0=1,count5=2,count10=0;
+	int k,*pf=&fact_n[2];
 	while(i<=10)fact0*=i++;
 	i = fact0;fact_n[0]=i%10;
 	while(i/10){i = i/10;fact_n[++curr_len]=i%10;}
+	curr_len-=2; 
 	i=11;
-	while(i<=n){		
-		curr_len = product(fact_n,curr_len,i++,digits);						
+	while(i<=n){	
+		k=i;
+		while(!(k/10)){k/=10;count10++;}
+		curr_len = product(curr_len,k,pf,digits);
 		if(curr_len>len[2]-Ln){
-			len[3] = i-1;
+			len[3] = i;
 			return 0;
 		}
-		if(i==up){ digits++; up=10*up;}
+		i++;
+		if(i==up){ digits++; up*=10;}
+		while(!(*pf)){pf++;curr_len--;count5++;}
 	}
-	len[0] = curr_len;
-	len[3] = i;
+	len[0] = curr_len+count5+count10;
+	len[3] = i; len[2] = count5+count10;
 	return 1;
 }
 
@@ -118,7 +132,9 @@ SEXP fact(SEXP N)
 		factorial_small(fact_n,len,n);
 		fact_s =(char *)malloc(sizeof(char)*(len[0]+1));
 		int2char(fact_n[0],fact_s);
-
+		if(n<=5) len[2]=0;
+		else len[2]=1;
+		if(n==10) len[2]=2;
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));
 	}
@@ -152,7 +168,6 @@ SEXP fact(SEXP N)
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));		
 	}
-
 	char *names[2] = {"fact", "len"};
 	PROTECT(list_names = allocVector(STRSXP, 2));
 	for(i = 0; i < 2; i++)
@@ -186,6 +201,9 @@ SEXP fact_sum(SEXP N)
 		fact_sum =(char *)malloc(sizeof(char)*(len[1]+1));
 		int2char(fact_n[0],fact_s);
 		int2char(fact_n[1],fact_sum);
+		if(n<=5) len[2]=0;
+		else len[2]=1;
+		if(n==10) len[2]=2;
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		PROTECT(rfact_sum = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));
