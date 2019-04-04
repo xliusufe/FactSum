@@ -12,7 +12,8 @@ R package "FactSum" Calculates the factorial of a large integer, which may be mu
    - [x] [FactSum-manual.pdf](https://github.com/xliusufe/FactSum/blob/master/inst/FactSum-manual.pdf) ---------- Details of the usage of the package.
    
    - [x] [factorial.md](https://github.com/xliusufe/FactSum/blob/master/inst/factorial.md) ---------- The factorial of n=20, 50, 100, 1000, 10000, and 100000.
-   A web-based calculator is available at [https://xliusufe.shinyapps.io/factorial/](https://xliusufe.shinyapps.io/factorial/).
+   
+   - [x] [A web-based calculator is available at] [https://xliusufe.shinyapps.io/factorial/](https://xliusufe.shinyapps.io/factorial/).
    
 # Example
     library(FactSum)
