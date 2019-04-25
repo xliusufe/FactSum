@@ -239,11 +239,14 @@ SEXP fact(SEXP N)
 			}	
 		}
 		r = pout;
-		i = fact_n[len[0]-1];L=2;
+		i = fact_n[len[0]-1];L=1;
 		while(i/10){ i = i/10; L++;}
-		L -= r;
-		fact_s =(char *)malloc(sizeof(char)*(len[0]*r+L));
+		len[0] = len[0]*r+L-r;
+		fact_s =(char *)malloc(sizeof(char)*(len[0]+1));
 		int2charArry(fact_n,len[0],r,fact_s);
+		i = fact_n[len[3]];L=0;
+		while(i%10==0){ i = i/10; L++;}
+		len[3] = len[3]*r+L;
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));		
 	}
@@ -315,17 +318,23 @@ SEXP fact_sum(SEXP N)
 			}	
 		}
 		r = pout;
-		i = fact_n[len[0]-1];L=2;
-		while(i/10){ i = i/10; L++;}
+		i = fact_n[len[0]-1];L=1;
+		while(i/10){ i = i/10; L++;} 
 		L -= r;
-		fact_s =(char *)malloc(sizeof(char)*(len[0]*r+L));
-		i = bb[len[1]-1];L=2;
-		while(i/10){ i = i/10; L++;}
-		L -= r;
-		fact_sum =(char *)malloc(sizeof(char)*(len[1]*r+L));
+		fact_s =(char *)malloc(sizeof(char)*(len[0]*r+L+1));
 		int2charArry(fact_n,len[0],r,fact_s);
-		int2charArry(bb,len[1],r,fact_sum);
+		len[0] = len[0]*r+L;
 
+		i = bb[len[1]-1];L=1;
+		while(i/10){ i = i/10; L++;} 
+		L -= r;
+		fact_sum =(char *)malloc(sizeof(char)*(len[1]*r+L+1));		
+		int2charArry(bb,len[1],r,fact_sum);
+		len[1] = len[1]*r+L;
+
+		i = fact_n[len[3]];L=0;
+		while(i%10==0){ i = i/10; L++;}
+		len[3] = len[3]*r+L;
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		PROTECT(rfact_sum = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));
