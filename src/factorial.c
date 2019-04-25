@@ -143,7 +143,7 @@ int factorial_sum_radix(int *b, int *fact_n, int *len, int n){
         i++;   r0 = r;
         if (len[0]==0 || len[1]==0)    return 0;
     }
-    return 1;
+    return r;
 }
 
 int factorial_radix(int *fact_n, int *len, int n){
@@ -163,25 +163,32 @@ int factorial_radix(int *fact_n, int *len, int n){
         i++;  r0 = r;
         if (len[0]==0 || len[1]==0)  return 0;
     }
-    return 1;
+    return r;
 }
 
 void int2charArry(int *p, int len, int r, char* str){
-	int i,j,k,*temp1, temp;
+	int i,j,k,*temp1, temp, *p1=&p[len-1];
+	char *p2=str;
 	temp1 = (int *) malloc(sizeof(int)*r);
-    for(i=0;i<len;i++) {
+	temp = *p1--; j=0;
+	while (temp/10){
+		temp1[j++] = temp%10;
+        temp = temp/10;
+    }
+	temp1[j] = temp;
+	for (k=0;k<=j;k++)  *p2++ = temp1[j-k]+48;
+    for(i=0;i<len-1;i++){
         for (j=0; j<r; j++) temp1[j]=0;
-        temp = p[len-1-i];
-        j = 0;
+		temp = *p1;   j = 0;
         while (temp/10) {
-            temp1[j] = temp%10;
+            temp1[j++] = temp%10;
             temp = temp/10;
-            j++;
         }
         temp1[j] = temp;
-        for (k=0;k<r;k++)  str[i*r+k] = temp1[r-1-k]+48;
+		for (k=0;k<r;k++)  *p2++ = temp1[r-1-k]+48;
+		p1--;
     }
-    str[len*r] = '\0';
+    *p2 = '\0';
 	free(temp1);
 }
 
@@ -207,13 +214,13 @@ SEXP fact(SEXP N)
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));
 	}
 	else{	
-		int j,L, curr_len, Ln=1;
+		int j,L,curr_len, Ln=1;
 		i = n;
 		while(i/10){ i = i/10; Ln++;}
 		r = (Ln<4)?6:(9-Ln);
 		L=(Ln-1+i*0.5)*n;
 		fact_n = (int *)malloc(sizeof(int)*L);
-		len[2]=L; len[3]=2; len[4] = 1;
+		len[2]=L; len[3]=0;
 		fact_n[0]=1; 
 		for(i=1;i<L;i++) fact_n[i]=0;
 
@@ -231,7 +238,11 @@ SEXP fact(SEXP N)
 				for(j=curr_len;j<len[2];j++)fact_n[j]=0;
 			}	
 		}
-		fact_s =(char *)malloc(sizeof(char)*(len[0]*r+1));
+		r = pout;
+		i = fact_n[len[0]-1];L=2;
+		while(i/10){ i = i/10; L++;}
+		L -= r;
+		fact_s =(char *)malloc(sizeof(char)*(len[0]*r+L));
 		int2charArry(fact_n,len[0],r,fact_s);
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));		
@@ -285,7 +296,7 @@ SEXP fact_sum(SEXP N)
 		fact_n = (int *)malloc(sizeof(int)*L);
 		int *bb = (int*) malloc(sizeof(int)*L);
 
-		len[2]=L; len[3]=2; len[4]=1;
+		len[2]=L; len[3]=0;
 		fact_n[0]=1; bb[0]=1;
 		for(i=1;i<L;i++){ fact_n[i]=0; bb[i]=0;}
 
@@ -303,8 +314,15 @@ SEXP fact_sum(SEXP N)
 				for(j=curr_len;j<len[2];j++){ fact_n[j]=0; bb[j]=0;}
 			}	
 		}
-		fact_s =(char *)malloc(sizeof(char)*(len[0]*r+1));
-		fact_sum =(char *)malloc(sizeof(char)*(len[1]*r+1));
+		r = pout;
+		i = fact_n[len[0]-1];L=2;
+		while(i/10){ i = i/10; L++;}
+		L -= r;
+		fact_s =(char *)malloc(sizeof(char)*(len[0]*r+L));
+		i = bb[len[1]-1];L=2;
+		while(i/10){ i = i/10; L++;}
+		L -= r;
+		fact_sum =(char *)malloc(sizeof(char)*(len[1]*r+L));
 		int2charArry(fact_n,len[0],r,fact_s);
 		int2charArry(bb,len[1],r,fact_sum);
 
