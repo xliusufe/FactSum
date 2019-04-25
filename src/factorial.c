@@ -238,12 +238,13 @@ SEXP fact(SEXP N)
 				for(j=curr_len;j<len[2];j++)fact_n[j]=0;
 			}	
 		}
-		r = pout;
+		r = pout;		
 		i = fact_n[len[0]-1];L=1;
-		while(i/10){ i = i/10; L++;}
-		len[0] = len[0]*r+L-r;
-		fact_s =(char *)malloc(sizeof(char)*(len[0]+1));
+		while(i/10){ i = i/10; L++;} 
+		L -= r;
+		fact_s =(char *)malloc(sizeof(char)*(len[0]*r+L+1));
 		int2charArry(fact_n,len[0],r,fact_s);
+		len[0] = len[0]*r+L;		
 		i = fact_n[len[3]];L=0;
 		while(i%10==0){ i = i/10; L++;}
 		len[2] = len[3]*r+L;
