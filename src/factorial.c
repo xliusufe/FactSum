@@ -334,7 +334,7 @@ SEXP fact_sum(SEXP N)
 
 		i = fact_n[len[3]];L=0;
 		while(i%10==0){ i = i/10; L++;}
-		len[3] = len[3]*r+L;
+		len[2] = len[3]*r+L;
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		PROTECT(rfact_sum = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));
