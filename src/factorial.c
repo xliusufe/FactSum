@@ -1,7 +1,6 @@
 #include <stdio.h>  // required for exit
 #include <stdlib.h> // required for malloc(), free();
 #include <R.h>
-#include <math.h>
 #include <Rinternals.h>  // required for SEXP et.al.;
 #include <string.h> // required for memcpy()
 
@@ -17,28 +16,32 @@ int int2char(int n,char* str){
 	return j;
 }
 
+int powint(int a, int n){
+	int i,b=1;
+	for(i=0;i<n;i++) b*=a;
+	return b;
+}
+
+int lengthint(int n){
+	int L=1,temp=n;
+	while(temp/10){ temp/=10; L++;}
+	return L;
+}
+
 int factorial_small_sum(int *fact, int *len, int n){
-	int i=2,fact0=1, sum=1,Ln;	
+	int i=2,fact0=1, sum=1;	
 	while(i<=n) {fact0*=i++; sum+=fact0;}
 	fact[0] = fact0; fact[1] = sum;
-	i = fact0; Ln = 1;
-	while(i/10){i = i/10; Ln++;	}
-	len[0] = Ln-1;
-	
-	i = sum; Ln = 1;
-	while(i/10){i = i/10; Ln++;	}
-	len[1] = Ln-1;
-
+	len[0] = lengthint(fact0)-1;
+	len[1] = lengthint(sum)-1;
 	return 0;
 }
 
 int factorial_small(int *fact, int *len, int n){
-	int i=2,fact0=1,Ln;	
+	int i=2,fact0=1;	
 	while(i<=n) fact0*=i++;
 	fact[0] = fact0;
-	i = fact0; Ln = 1;
-	while(i/10){i = i/10; Ln++;	}
-	len[0] = Ln-1;
+	len[0] = lengthint(fact0)-1;
 	return 0;
 }
 
@@ -87,20 +90,20 @@ int product_radix(int *fact_n, int *len, int k, int radix){
 
 int changeRadix(int *p, int len, int *l, int r, int r0){
     int *ptemp, j, k, t1, t2, m, L, Len=0;
-    ptemp = (int *) malloc(sizeof(int)*l[2]);
-    for (j=0; j<len; j++) ptemp[j] = 0;
+	int *p1,*p2;
+    ptemp = (int *) malloc(sizeof(int)*2*len);
+    p2=ptemp; for (j=0; j<2*len; j++) *p2++ = 0;
     if (r!=1) {
-        j = p[len-1]; L = 1;
-        while(j/10){ j = j/10; L++;}
+		L = lengthint(p[len-1]);
         if (((len-1)*r0 + L)%r==0)  Len = ((len-1)*r0 + L)/r;
         else   Len = ((len-1)*r0 + L)/r + 1;
-        t1 = pow(10.0, 1.0*r);
+        t1 = powint(10, r);
         ptemp[0] = p[0]%t1;
         j = p[0]/t1; L = 1;
         m = 0;
         for (k=1; ; k++) {
-            t1 = pow(10.0, 1.0*(r-L));
-            t2 = pow(10.0, 1.0*L);
+            t1 = powint(10, r-L);
+            t2 = powint(10, L);
             ptemp[k] = j + p[k-m]%t1*t2;
             j = p[k-m]/t1; L++;
             if (j==0 && k>=Len) break;
@@ -110,58 +113,61 @@ int changeRadix(int *p, int len, int *l, int r, int r0){
                 ptemp[k+2] = p[k+1-m]%t1;
                 j = p[k+1-m]/t1; L = 1;
                 if (j==0 && (k+2)>=Len) break;
-                k=k+2;   m++;
+                k+=2;   m++;
             }
         }
     }else{
-        for (k=0,m=0; m<len; k=k+2,m++) {
-            ptemp[k] = p[m]%10; ptemp[k+1] = p[m]/10;}
-        j = p[len-1]; L = 1;
-        while(j/10){ j = j/10; L++;}
-		len = (L==1)?((len-1)*2 + 1):(2*len);
+		p1=p; p2=ptemp;
+        for (m=0; m<len; m++,p1++) {
+            *p2++ = (*p1)%10; *p2++ = (*p1)/10;}
+		Len = 2*(len-1)+lengthint(p[len-1]);
     }
-    for (k=0; k<Len; k++) p[k] = ptemp[k];
+	p1=p; p2=ptemp;
+    for (k=0; k<Len; k++,p1++,p2++) *p1 = *p2;
+	free(ptemp);
     return Len;
 }
 
-int factorial_sum_radix(int *b, int *fact_n, int *len, int n){
-    int i=1, j, radix, r, r0=6, L;
-    while (i<=n) {
-        j = i; L = 1;
-        while(j/10){ j = j/10; L++;}
-        r = (L<4)?6:(9-L);
-        radix=pow(10.0, 1.0*r);
-        if (r!=r0) {
+int factorial_radix(int *fact_n, int *len, int n){
+    int i=1, j, radix, r0=5, r=r0, L, up=10000;
+	radix=powint(10,r0); 
+    while (i<=n) {		
+        if (i==up&&r>1) {
+			r--;
             j = fact_n[len[3]];L=0;
             while(j%10==0){ j = j/10; L++;}
             len[3] = (len[3]*r0 + L)/r;
-            len[0] = changeRadix(fact_n, len[0], len, r, r0);
-            len[1] = changeRadix(b, len[1], len, r, r0);
+            len[0] = changeRadix(fact_n, len[0], len, r, r0);			
+			radix/=10;
+			up*=10;
+			r0=r;
         }
         len[0] = product_radix(fact_n,len,i,radix);
-        len[1] = plus_radix(b,fact_n,len,i,radix);
-        i++;   r0 = r;
-        if (len[0]==0 || len[1]==0)    return 0;
+        i++;
+        if (len[0]==0 || len[1]==0) return 0;
     }
     return r;
 }
 
-int factorial_radix(int *fact_n, int *len, int n){
-    int i=1, j, radix, r, r0=6, L;
-    while (i<=n) {
-        j = i; L = 1;
-        while(j/10){ j = j/10; L++;}
-		r = (L<4)?6:(9-L);
-        radix=pow(10.0, 1.0*r);
-        if (r!=r0) {
+int factorial_radix_sum(int *b, int *fact_n, int *len, int n){
+    int i=1, j, radix, r0=5, r=r0, L, up=10000;
+	radix=powint(10,r0); 
+    while (i<=n) {		
+        if (i==up&&r>1) {
+			r--;
             j = fact_n[len[3]];L=0;
             while(j%10==0){ j = j/10; L++;}
             len[3] = (len[3]*r0 + L)/r;
-            len[0] = changeRadix(fact_n, len[0], len, r, r0);
+            len[0] = changeRadix(fact_n, len[0], len, r, r0);			
+            len[1] = changeRadix(b, len[1], len, r, r0);
+			radix/=10;
+			up*=10;
+			r0=r;
         }
         len[0] = product_radix(fact_n,len,i,radix);
-        i++;  r0 = r;
-        if (len[0]==0 || len[1]==0)  return 0;
+        len[1] = plus_radix(b,fact_n,len,i,radix);
+        i++;
+        if (len[0]==0 || len[1]==0) return 0;
     }
     return r;
 }
@@ -232,19 +238,17 @@ SEXP fact(SEXP N)
 				int *f1;
 				curr_len=len[2];
 				len[2] = 2*len[2];
-				f1 = (int*)realloc(fact_n,sizeof(int)*len[2]*r);
+				f1 = (int*)realloc(fact_n,sizeof(int)*len[2]);
 				if(!f1){error("Out of memory!"); len[4]=0;}
 				fact_n=f1;
 				for(j=curr_len;j<len[2];j++)fact_n[j]=0;
 			}	
 		}
-		r = pout;		
-		i = fact_n[len[0]-1];L=1;
-		while(i/10){ i = i/10; L++;} 
-		L -= r;
+		r = pout;
+		L = lengthint(fact_n[len[0]-1])-r;
 		fact_s =(char *)malloc(sizeof(char)*(len[0]*r+L+1));
 		int2charArry(fact_n,len[0],r,fact_s);
-		len[0] = len[0]*r+L;		
+		len[0] = len[0]*r+L;
 		i = fact_n[len[3]];L=0;
 		while(i%10==0){ i = i/10; L++;}
 		len[2] = len[3]*r+L;
@@ -306,29 +310,24 @@ SEXP fact_sum(SEXP N)
 
 		int pout=0;
 		while(!pout){
-			pout=factorial_sum_radix(bb,fact_n,len,n);
+			pout=factorial_radix_sum(bb,fact_n,len,n);
 			if(!pout){
 				int *b1,*f1;
 				curr_len=len[2];
 				len[2] = 2*len[2];
-				b1 = (int*)realloc(bb,sizeof(int)*len[2]*r);
-				f1 = (int*)realloc(fact_n,sizeof(int)*len[2]*r);
+				b1 = (int*)realloc(bb,sizeof(int)*len[2]);
+				f1 = (int*)realloc(fact_n,sizeof(int)*len[2]);
 				if((!b1)|(!f1)){error("Out of memory!"); len[4]=0;}
 				bb=b1; fact_n=f1;
 				for(j=curr_len;j<len[2];j++){ fact_n[j]=0; bb[j]=0;}
 			}	
 		}
 		r = pout;
-		i = fact_n[len[0]-1];L=1;
-		while(i/10){ i = i/10; L++;} 
-		L -= r;
+		L = lengthint(fact_n[len[0]-1])-r;
 		fact_s =(char *)malloc(sizeof(char)*(len[0]*r+L+1));
 		int2charArry(fact_n,len[0],r,fact_s);
 		len[0] = len[0]*r+L;
-
-		i = bb[len[1]-1];L=1;
-		while(i/10){ i = i/10; L++;} 
-		L -= r;
+		L = lengthint(bb[len[1]-1])-r;
 		fact_sum =(char *)malloc(sizeof(char)*(len[1]*r+L+1));		
 		int2charArry(bb,len[1],r,fact_sum);
 		len[1] = len[1]*r+L;
