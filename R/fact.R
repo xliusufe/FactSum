@@ -6,7 +6,7 @@ fact <- function(n,is.sum=FALSE){
     if(!fitc$len[5]) printf("Out of memery!")
     fit <- list(fact=fitc$fact,
                 len_fact=fitc$len[1],
-                nzeros=fitc$len[3]
+                nzeros=fitc$len[4]
                 )
   }
   else{
@@ -16,7 +16,7 @@ fact <- function(n,is.sum=FALSE){
                 len_fact=fitc$len[1],
                 fact_sum=fitc$fact_sum,
                 len_sum=fitc$len[2],
-                nzeros=fitc$len[3]
+                nzeros=fitc$len[4]
                 )
   }
   fit

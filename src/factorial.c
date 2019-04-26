@@ -16,6 +16,32 @@ int int2char(int n,char* str){
 	return j;
 }
 
+void int2charArry(int *p, int len, int r, char* str){
+	int i,j,k,*temp1, temp, *p1=&p[len-1];
+	char *p2=str;
+	temp1 = (int *) malloc(sizeof(int)*r);
+	temp = *p1--; j=0;
+	while (temp/10){
+		temp1[j++] = temp%10;
+        temp = temp/10;
+    }
+	temp1[j] = temp;
+	for (k=0;k<=j;k++)  *p2++ = temp1[j-k]+48;
+    for(i=0;i<len-1;i++){
+        for (j=0; j<r; j++) temp1[j]=0;
+		temp = *p1;   j = 0;
+        while (temp/10) {
+            temp1[j++] = temp%10;
+            temp = temp/10;
+        }
+        temp1[j] = temp;
+		for (k=0;k<r;k++)  *p2++ = temp1[r-1-k]+48;
+		p1--;
+    }
+    *p2 = '\0';
+	free(temp1);
+}
+
 int powint(int a, int n){
 	int i,b=1;
 	for(i=0;i<n;i++) b*=a;
@@ -25,6 +51,12 @@ int powint(int a, int n){
 int lengthint(int n){
 	int L=1,temp=n;
 	while(temp/10){ temp/=10; L++;}
+	return L;
+}
+
+int zerosint(int n){
+	int L=0,temp=n;
+	while(!(temp%10)){ temp/=10; L++;}
 	return L;
 }
 
@@ -129,34 +161,35 @@ int changeRadix(int *p, int len, int *l, int r, int r0){
 }
 
 int factorial_radix(int *fact_n, int *len, int n){
-    int i=1, j, radix, r0=5, r=r0, L, up=10000;
+    int i=1, radix, r0=5, r=r0, L, up=10000;
 	radix=powint(10,r0); 
     while (i<=n) {		
         if (i==up&&r>1) {
 			r--;
-            j = fact_n[len[3]];L=0;
-            while(j%10==0){ j = j/10; L++;}
+			L = zerosint(fact_n[len[3]]);
             len[3] = (len[3]*r0 + L)/r;
             len[0] = changeRadix(fact_n, len[0], len, r, r0);			
 			radix/=10;
 			up*=10;
 			r0=r;
         }
-        len[0] = product_radix(fact_n,len,i,radix);
-        i++;
+        len[0] = product_radix(fact_n,len,i++,radix);
         if (len[0]==0 || len[1]==0) return 0;
     }
+	int *p1=&fact_n[len[3]];L=0;
+	while(!(*p1++)) L+=r;			
+	L += zerosint(*p1);
+	len[3] = len[3]*r+L;
     return r;
 }
 
 int factorial_radix_sum(int *b, int *fact_n, int *len, int n){
-    int i=1, j, radix, r0=5, r=r0, L, up=10000;
+    int i=1, radix, r0=5, r=r0, L, up=10000;
 	radix=powint(10,r0); 
     while (i<=n) {		
-        if (i==up&&r>1) {
+        if (i==up&&r>1){
 			r--;
-            j = fact_n[len[3]];L=0;
-            while(j%10==0){ j = j/10; L++;}
+			L = zerosint(fact_n[len[3]]);
             len[3] = (len[3]*r0 + L)/r;
             len[0] = changeRadix(fact_n, len[0], len, r, r0);			
             len[1] = changeRadix(b, len[1], len, r, r0);
@@ -165,37 +198,14 @@ int factorial_radix_sum(int *b, int *fact_n, int *len, int n){
 			r0=r;
         }
         len[0] = product_radix(fact_n,len,i,radix);
-        len[1] = plus_radix(b,fact_n,len,i,radix);
-        i++;
+        len[1] = plus_radix(b,fact_n,len,i++,radix);
         if (len[0]==0 || len[1]==0) return 0;
     }
+	int *p1=&fact_n[len[3]];L=0;
+	while(!(*p1++)) L+=r;			
+	L += zerosint(*p1);
+	len[3] = len[3]*r+L;
     return r;
-}
-
-void int2charArry(int *p, int len, int r, char* str){
-	int i,j,k,*temp1, temp, *p1=&p[len-1];
-	char *p2=str;
-	temp1 = (int *) malloc(sizeof(int)*r);
-	temp = *p1--; j=0;
-	while (temp/10){
-		temp1[j++] = temp%10;
-        temp = temp/10;
-    }
-	temp1[j] = temp;
-	for (k=0;k<=j;k++)  *p2++ = temp1[j-k]+48;
-    for(i=0;i<len-1;i++){
-        for (j=0; j<r; j++) temp1[j]=0;
-		temp = *p1;   j = 0;
-        while (temp/10) {
-            temp1[j++] = temp%10;
-            temp = temp/10;
-        }
-        temp1[j] = temp;
-		for (k=0;k<r;k++)  *p2++ = temp1[r-1-k]+48;
-		p1--;
-    }
-    *p2 = '\0';
-	free(temp1);
 }
 
 SEXP fact(SEXP N)
@@ -248,10 +258,7 @@ SEXP fact(SEXP N)
 		L = lengthint(fact_n[len[0]-1])-r;
 		fact_s =(char *)malloc(sizeof(char)*(len[0]*r+L+1));
 		int2charArry(fact_n,len[0],r,fact_s);
-		len[0] = len[0]*r+L;
-		i = fact_n[len[3]];L=0;
-		while(i%10==0){ i = i/10; L++;}
-		len[2] = len[3]*r+L;
+		len[0] = len[0]*r+L;		
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));		
 	}
@@ -331,10 +338,6 @@ SEXP fact_sum(SEXP N)
 		fact_sum =(char *)malloc(sizeof(char)*(len[1]*r+L+1));		
 		int2charArry(bb,len[1],r,fact_sum);
 		len[1] = len[1]*r+L;
-
-		i = fact_n[len[3]];L=0;
-		while(i%10==0){ i = i/10; L++;}
-		len[2] = len[3]*r+L;
 		PROTECT(rfact_s = allocVector(STRSXP, 1));
 		PROTECT(rfact_sum = allocVector(STRSXP, 1));
 		SET_STRING_ELT(rfact_s, 0,  mkChar(fact_s));
