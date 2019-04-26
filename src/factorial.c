@@ -121,18 +121,16 @@ int product_radix(int *fact_n, int *len, int k, int radix){
 }
 
 int changeRadix(int *p, int len, int *l, int r, int r0){
-    int *ptemp, j, k, t1, t2, m, L, Len=0;
-	int *p1,*p2;
+    int *ptemp, j, k, t1, t2, m, L, Len=0,*p1,*p2;
     ptemp = (int *) malloc(sizeof(int)*2*len);
     p2=ptemp; for (j=0; j<2*len; j++) *p2++ = 0;
-    if (r!=1) {
+    if (r>1) {
 		L = lengthint(p[len-1]);
         if (((len-1)*r0 + L)%r==0)  Len = ((len-1)*r0 + L)/r;
         else   Len = ((len-1)*r0 + L)/r + 1;
         t1 = powint(10, r);
         ptemp[0] = p[0]%t1;
-        j = p[0]/t1; L = 1;
-        m = 0;
+        j = p[0]/t1; L = 1;  m = 0;
         for (k=1; ; k++) {
             t1 = powint(10, r-L);
             t2 = powint(10, L);
@@ -145,7 +143,7 @@ int changeRadix(int *p, int len, int *l, int r, int r0){
                 ptemp[k+2] = p[k+1-m]%t1;
                 j = p[k+1-m]/t1; L = 1;
                 if (j==0 && (k+2)>=Len) break;
-                k+=2;   m++;
+                k+=2;  m++;
             }
         }
     }else{
@@ -155,7 +153,7 @@ int changeRadix(int *p, int len, int *l, int r, int r0){
 		Len = 2*(len-1)+lengthint(p[len-1]);
     }
 	p1=p; p2=ptemp;
-    for (k=0; k<Len; k++,p1++,p2++) *p1 = *p2;
+    for (k=0; k<Len; k++) *p1++ = *p2++;
 	free(ptemp);
     return Len;
 }
