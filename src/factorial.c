@@ -169,9 +169,7 @@ int factorial_radix(int *fact_n, int *len, int n){
 			L = zerosint(fact_n[len[3]]);
             len[3] = (len[3]*r0 + L)/r;
             len[0] = changeRadix(fact_n, len[0], len, r, r0);			
-			radix/=10;
-			up*=10;
-			r0=r;
+			radix/=10;	up*=10;	r0=r;
         }
         len[0] = product_radix(fact_n,len,i++,radix);
         if (len[0]==0 || len[1]==0) return 0;
@@ -193,9 +191,7 @@ int factorial_radix_sum(int *b, int *fact_n, int *len, int n){
             len[3] = (len[3]*r0 + L)/r;
             len[0] = changeRadix(fact_n, len[0], len, r, r0);			
             len[1] = changeRadix(b, len[1], len, r, r0);
-			radix/=10;
-			up*=10;
-			r0=r;
+			radix/=10;	up*=10;	r0=r;
         }
         len[0] = product_radix(fact_n,len,i,radix);
         len[1] = plus_radix(b,fact_n,len,i++,radix);
