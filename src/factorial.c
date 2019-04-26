@@ -177,7 +177,7 @@ int factorial_radix(int *fact_n, int *len, int n){
         if (len[0]==0 || len[1]==0) return 0;
     }
 	int *p1=&fact_n[len[3]];L=0;
-	while(!(*p1++)) L+=r;			
+	while(!(*p1)){ L+=r; p1++;}			
 	L += zerosint(*p1);
 	len[3] = len[3]*r+L;
     return r;
@@ -202,7 +202,7 @@ int factorial_radix_sum(int *b, int *fact_n, int *len, int n){
         if (len[0]==0 || len[1]==0) return 0;
     }
 	int *p1=&fact_n[len[3]];L=0;
-	while(!(*p1++)) L+=r;			
+	while(!(*p1)){ L+=r; p1++;}
 	L += zerosint(*p1);
 	len[3] = len[3]*r+L;
     return r;
