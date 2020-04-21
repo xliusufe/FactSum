@@ -15,7 +15,7 @@ R package "FactSum" Calculates the factorial of a large integer, which may be mu
    
    - [x] [Web-based calculator](https://xliusufe.shinyapps.io/factorial/) --------- A web-based calculator 
 
-   - [X] ["factpy"](https://github.com/xliusufe/factpy/) ------------------------ A Python package  is available  
+   - [X] ["fact"](https://github.com/xliusufe/factpy/) -------------------------- The corresponding `Python` package  is available  
    
 # Example
     library(FactSum)
